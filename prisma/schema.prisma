@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator zod {
+  provider  = "zod-prisma"
+  output    = "./zod"
+  modelCase = "camelCase"
+}
+
+model User {
+  id              String       @id @default(cuid())
+  email           String       @unique
+  name            String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  contests        Contest[]    @relation("ContestCreator")
+  contestantIn    Contestant[] @relation("ContestantUser")
+  votes           Vote[]       @relation("UserVotes")
+  emailVerified   Boolean
+  image           String?
+  Account         Account[]
+  Session         Session[]
+  sentInvites     Invite[]     @relation("InviteSender")
+  receivedInvites Invite[]     @relation("InviteReceiver")
+
+  @@map("user")
+}
+
+model Contest {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime     @default(now())
+  status      Status       @default(draft)
+  updatedAt   DateTime     @updatedAt
+  createdBy   User         @relation("ContestCreator", fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  contestants Contestant[] @relation("ContestContestants")
+  votes       Vote[]       @relation("ContestVotes")
+  invites     Invite[]     @relation("ContestInvites")
+}
+
+model Contestant {
+  id        String   @id @default(cuid())
+  user      User     @relation("ContestantUser", fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  contest   Contest  @relation("ContestContestants", fields: [contestId], references: [id], onDelete: Cascade)
+  contestId String
+  votes     Vote[]   @relation("ContestantVotes")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, contestId])
+}
+
+model Invite {
+  id           String       @id @default(cuid())
+  inviter      User         @relation("InviteSender", fields: [inviterId], references: [id], onDelete: Cascade)
+  inviterId    String
+  invited      User?        @relation("InviteReceiver", fields: [invitedId], references: [id], onDelete: Cascade)
+  invitedId    String?
+  invitedEmail String
+  contest      Contest      @relation("ContestInvites", fields: [contestId], references: [id], onDelete: Cascade)
+  contestId    String
+  status       InviteStatus @default(pending)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([invitedEmail, contestId])
+}
+
+model Vote {
+  id           String     @id @default(cuid())
+  user         User       @relation("UserVotes", fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  contest      Contest    @relation("ContestVotes", fields: [contestId], references: [id], onDelete: Cascade)
+  contestId    String
+  contestant   Contestant @relation("ContestantVotes", fields: [contestantId], references: [id], onDelete: Cascade)
+  contestantId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([userId, contestId])
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id           String    @id
+  accountId    String
+  providerId   String
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  password     String?
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  @@map("verification")
+}
+
+enum Status {
+  draft
+  published
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  rejected
+}
