@@ -1,20 +1,20 @@
-import * as z from "zod";
-import { type CompleteUser, relatedUserModel } from "./index";
+import * as z from "zod"
+import { CompleteUser, relatedUserModel } from "./index"
 
 export const accountModel = z.object({
-	id: z.string(),
-	accountId: z.string(),
-	providerId: z.string(),
-	userId: z.string(),
-	accessToken: z.string().nullish(),
-	refreshToken: z.string().nullish(),
-	idToken: z.string().nullish(),
-	expiresAt: z.date().nullish(),
-	password: z.string().nullish(),
-});
+  id: z.string(),
+  accountId: z.string(),
+  providerId: z.string(),
+  userId: z.string(),
+  accessToken: z.string().nullish(),
+  refreshToken: z.string().nullish(),
+  idToken: z.string().nullish(),
+  expiresAt: z.date().nullish(),
+  password: z.string().nullish(),
+})
 
 export interface CompleteAccount extends z.infer<typeof accountModel> {
-	user: CompleteUser;
+  user: CompleteUser
 }
 
 /**
@@ -22,8 +22,6 @@ export interface CompleteAccount extends z.infer<typeof accountModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedAccountModel: z.ZodSchema<CompleteAccount> = z.lazy(() =>
-	accountModel.extend({
-		user: relatedUserModel,
-	}),
-);
+export const relatedAccountModel: z.ZodSchema<CompleteAccount> = z.lazy(() => accountModel.extend({
+  user: relatedUserModel,
+}))

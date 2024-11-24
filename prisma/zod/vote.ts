@@ -1,26 +1,19 @@
-import * as z from "zod";
-import {
-	type CompleteContest,
-	type CompleteContestant,
-	type CompleteUser,
-	relatedContestModel,
-	relatedContestantModel,
-	relatedUserModel,
-} from "./index";
+import * as z from "zod"
+import { CompleteUser, relatedUserModel, CompleteContest, relatedContestModel, CompleteContestant, relatedContestantModel } from "./index"
 
 export const voteModel = z.object({
-	id: z.string(),
-	userId: z.string(),
-	contestId: z.string(),
-	contestantId: z.string(),
-	createdAt: z.date(),
-	updatedAt: z.date(),
-});
+  id: z.string(),
+  userId: z.string(),
+  contestId: z.string(),
+  contestantId: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
 
 export interface CompleteVote extends z.infer<typeof voteModel> {
-	user: CompleteUser;
-	contest: CompleteContest;
-	contestant: CompleteContestant;
+  user: CompleteUser
+  contest: CompleteContest
+  contestant: CompleteContestant
 }
 
 /**
@@ -28,10 +21,8 @@ export interface CompleteVote extends z.infer<typeof voteModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedVoteModel: z.ZodSchema<CompleteVote> = z.lazy(() =>
-	voteModel.extend({
-		user: relatedUserModel,
-		contest: relatedContestModel,
-		contestant: relatedContestantModel,
-	}),
-);
+export const relatedVoteModel: z.ZodSchema<CompleteVote> = z.lazy(() => voteModel.extend({
+  user: relatedUserModel,
+  contest: relatedContestModel,
+  contestant: relatedContestantModel,
+}))

@@ -27,7 +27,7 @@ export function GoogleButton() {
 				});
 				return;
 			}
-			router.push("/dashboard");
+			router.push("/polls");
 		} catch (error) {
 			console.error(error);
 			toast({
