@@ -13,33 +13,31 @@ export function GoogleButton() {
 	const { toast } = useToast();
 	const [pending, setPending] = useState(false);
 
-	const googleSignIn = () => {
+	const googleSignIn = async () => {
 		setPending(true);
-		async () => {
-			try {
-				const { error } = await authClient.signIn.social({
-					provider: "google",
-				});
-				if (error) {
-					toast({
-						title: "Something went wrong",
-						description: error.message,
-						variant: "destructive",
-					});
-					return;
-				}
-				router.push("/dashboard");
-			} catch (error) {
-				console.error(error);
+		try {
+			const { error } = await authClient.signIn.social({
+				provider: "google",
+			});
+			if (error) {
 				toast({
 					title: "Something went wrong",
-					description: "Internal server error",
+					description: error.message,
 					variant: "destructive",
 				});
-			} finally {
-				setPending(false);
+				return;
 			}
-		};
+			router.push("/dashboard");
+		} catch (error) {
+			console.error(error);
+			toast({
+				title: "Something went wrong",
+				description: "Internal server error",
+				variant: "destructive",
+			});
+		} finally {
+			setPending(false);
+		}
 	};
 
 	return (
@@ -47,7 +45,6 @@ export function GoogleButton() {
 			variant={"secondary"}
 			disabled={pending}
 			onClick={() => googleSignIn()}
-			className="hidden"
 		>
 			{pending ? (
 				<Loader className="w-4 h-4 animate-spin" />

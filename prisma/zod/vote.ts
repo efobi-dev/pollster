@@ -20,7 +20,7 @@ export const voteModel = z.object({
 export interface CompleteVote extends z.infer<typeof voteModel> {
 	user: CompleteUser;
 	contest: CompleteContest;
-	candidate: CompleteContestant;
+	contestant: CompleteContestant;
 }
 
 /**
@@ -32,6 +32,6 @@ export const relatedVoteModel: z.ZodSchema<CompleteVote> = z.lazy(() =>
 	voteModel.extend({
 		user: relatedUserModel,
 		contest: relatedContestModel,
-		candidate: relatedContestantModel,
+		contestant: relatedContestantModel,
 	}),
 );

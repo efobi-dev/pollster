@@ -1,5 +1,4 @@
 ## Core Features
-- [ ] Fix Google OAuth login implementation
 - [ ] Enable anonymous voting functionality
 - [ ] Implement paid voting system
 - [ ] Add notification system for users

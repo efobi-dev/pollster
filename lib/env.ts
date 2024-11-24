@@ -12,9 +12,6 @@ export const env = createEnv({
 		SMTP_SERVER_HOST: z.string(),
 		SMTP_SERVER_USER: z.string().email(),
 	},
-	client: {
-		NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-	},
 	runtimeEnv: {
 		DATABASE_URL: process.env.DATABASE_URL,
 		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
@@ -23,7 +20,6 @@ export const env = createEnv({
 		SMTP_KEY: process.env.SMTP_KEY,
 		EMAIL_FROM: process.env.EMAIL_FROM,
 		SMTP_SERVER_HOST: process.env.SMTP_SERVER_HOST,
-		NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
 		SMTP_SERVER_USER: process.env.SMTP_SERVER_USER,
 	},
 });

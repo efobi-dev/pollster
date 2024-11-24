@@ -12,8 +12,8 @@ export default function SplashLayout({ children }: { children: ReactNode }) {
 					</Link>
 				</div>
 				<div className="flex-none">
-					<Link className="btn btn-link" href={"/dashboard"}>
-						<Button variant={"link"}>Dashboard</Button>
+					<Link href={"/polls"}>
+						<Button variant={"link"}>Polls</Button>
 					</Link>
 				</div>
 			</header>

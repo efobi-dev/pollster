@@ -34,7 +34,7 @@ export async function inviteUser(values: ZInvite) {
 			inviterUsername: authz.user.name,
 			invitedUserEmail: invitedEmail,
 			inviterIp: authz.session.ipAddress || "",
-			inviteLink: `${env.NEXT_PUBLIC_APP_URL}/invites/${invite.id}`,
+			inviteLink: `https://${process.env.VERCEL_URL}/invites/${invite.id}`,
 			contestName: contestName,
 		});
 		const mail = await transporter.sendMail({
